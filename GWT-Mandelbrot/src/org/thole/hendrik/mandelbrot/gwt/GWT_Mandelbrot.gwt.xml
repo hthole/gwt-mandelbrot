@@ -11,6 +11,7 @@
   <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
   <!-- Other module inherits                                      -->
+  <inherits name="com.google.gwt.resources.Resources" />
   <inherits name='com.google.gwt.widgetideas.GWTCanvas'/>	
 
   <!-- Specify the app entry point class.                         -->
@@ -18,5 +19,18 @@
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>
+  
+  
+  	<replace-with class="org.thole.hendrik.mandelbrot.gwt.client.impl.MandelBrotImpl">
+		<when-type-is class="org.thole.hendrik.mandelbrot.gwt.client.impl.MandelBrotImpl" />
+	</replace-with>
+	
+	<replace-with class="org.thole.hendrik.mandelbrot.gwt.client.impl.MandelBrotImplIE">
+		<when-type-is class="org.thole.hendrik.mandelbrot.gwt.client.impl.MandelBrotImpl" />
+		<any>
+			<when-property-is name="user.agent" value="ie8" />
+			<when-property-is name="user.agent" value="ie6" />
+		</any>
+	</replace-with>
 
 </module>

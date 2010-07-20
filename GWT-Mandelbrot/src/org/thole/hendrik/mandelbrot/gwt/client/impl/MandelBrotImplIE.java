@@ -18,30 +18,30 @@
  *
  */
 
-package org.thole.hendrik.mandelbrot.gwt.client;
+package org.thole.hendrik.mandelbrot.gwt.client.impl;
 
-import org.thole.hendrik.mandelbrot.gwt.client.impl.MandelBrotImpl;
+import org.thole.hendrik.mandelbrot.gwt.client.res.MandelBundle;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.FlowPanel;
-
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Mandelbrot Set.
  * 
- * @author Manfred Thole, Hendrik Thole
- * @date 19.07.2010
+ * This is an implementation for Internet Explorer. It just displays an image
+ * of what others would see. There is no canvas element in IE (<= IE8) and as we
+ * don't want to rely on excanvas.js we're just displaying an image.
+ * 
+ * @author Hendrik Thole
+ * @date 20.07.2010
  *
  */
-public class MandelBrot extends FlowPanel {
+public class MandelBrotImplIE extends MandelBrotImpl {
 
-	private static final MandelBrotImpl impl = GWT.create(MandelBrotImpl.class);
+	@Override
+	public Widget getMandel() {
 
-
-	public MandelBrot() {
-
-		this.add(impl.getMandel());
+		final Image mandel = new Image(MandelBundle.INST.mandelImg());
+		mandel.setTitle("As there is no canvas element in IE you are being displayed an image of the output - nothing is calculated here.");
+		return mandel;
 	}
-
-
 }
