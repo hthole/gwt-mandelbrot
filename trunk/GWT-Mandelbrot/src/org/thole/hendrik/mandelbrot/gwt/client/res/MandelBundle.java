@@ -18,30 +18,18 @@
  *
  */
 
-package org.thole.hendrik.mandelbrot.gwt.client;
 
-import org.thole.hendrik.mandelbrot.gwt.client.impl.MandelBrotImpl;
+package org.thole.hendrik.mandelbrot.gwt.client.res;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
+public interface MandelBundle extends ClientBundle {
 
-/**
- * Mandelbrot Set.
- * 
- * @author Manfred Thole, Hendrik Thole
- * @date 19.07.2010
- *
- */
-public class MandelBrot extends FlowPanel {
+	public static MandelBundle INST = GWT.create(MandelBundle.class);
 
-	private static final MandelBrotImpl impl = GWT.create(MandelBrotImpl.class);
-
-
-	public MandelBrot() {
-
-		this.add(impl.getMandel());
-	}
-
+	@Source("mandelbrot.png")
+	ImageResource mandelImg();
 
 }
