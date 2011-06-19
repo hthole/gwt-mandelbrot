@@ -12,7 +12,8 @@
 
   <!-- Other module inherits                                      -->
   <inherits name="com.google.gwt.resources.Resources" />
-  <inherits name='com.google.gwt.widgetideas.GWTCanvas'/>	
+  
+   <set-property name="compiler.stackMode" value="strip" />
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='org.thole.hendrik.mandelbrot.gwt.client.GWT_Mandelbrot'/>

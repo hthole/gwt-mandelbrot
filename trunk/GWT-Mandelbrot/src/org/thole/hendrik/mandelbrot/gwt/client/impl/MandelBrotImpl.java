@@ -20,9 +20,10 @@
 
 package org.thole.hendrik.mandelbrot.gwt.client.impl;
 
+import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.canvas.dom.client.Context2d;
+import com.google.gwt.canvas.dom.client.CssColor;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.widgetideas.graphics.client.Color;
-import com.google.gwt.widgetideas.graphics.client.GWTCanvas;
 
 /**
  * 
@@ -42,15 +43,21 @@ public class MandelBrotImpl {
 	private int itmax13;
 	private int itmax23;
 
-	public Widget getMandel() {
-		final GWTCanvas canvas = new GWTCanvas(size_x, size_y);
 
-		canvas.setBackgroundColor(Color.BLACK);
+
+	public Widget getMandel() {
+
+		final Canvas canvas = Canvas.createIfSupported();
+		canvas.setCoordinateSpaceHeight(size_y);
+		canvas.setCoordinateSpaceWidth(size_y);
+		canvas.setHeight(size_y+"px");
+		canvas.setWidth(size_x+"px");
+		final Context2d context = canvas.getContext2d();
+
 		itmax13 = itmax*1/3;
 		itmax23 = itmax*2/3;
 
-		paintMandel(canvas);
-
+		paintMandel(context);
 
 		return canvas;
 	}
@@ -60,7 +67,7 @@ public class MandelBrotImpl {
 	 * Calculate the Set
 	 * @param canvas
 	 */
-	private void paintMandel(final GWTCanvas canvas) {
+	private final void paintMandel(final Context2d context) {
 		double ix, iy, zr, zi, zrq, ziq;
 		int it;
 		final double inx = (xe - xa) / size_x;
@@ -79,8 +86,8 @@ public class MandelBrotImpl {
 					zr = zrq - ziq + ix;
 				} while (zrq + ziq < 4 && it < itmax);
 
-				canvas.setFillStyle(it2C(it));
-				canvas.fillRect((ix-xa)/inx, (iy-ya)/iny, 1, 1);
+				context.setFillStyle(it2C(it));
+				context.fillRect((ix-xa)/inx, (iy-ya)/iny, 1, 1);
 			}
 		}
 	}
@@ -91,13 +98,13 @@ public class MandelBrotImpl {
 	 * @param it
 	 * @return Color
 	 */
-	private final Color it2C(final int it) {
+	private final CssColor it2C(final int it) {
 		if (it < itmax13) {
-			return new Color(it*255/itmax13, 0, 0);
+			return CssColor.make(it*255/itmax13, 0, 0);
 		}
 		if (it < itmax23) {
-			return new Color(0, (it-itmax13)*255/itmax13, 0);
+			return CssColor.make(0, (it-itmax13)*255/itmax13, 0);
 		}
-		return new Color(0, 0, (it-itmax23)*255/itmax13);
+		return CssColor.make(0, 0, (it-itmax23)*255/itmax13);
 	}
 }
