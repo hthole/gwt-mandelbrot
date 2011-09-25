@@ -23,6 +23,9 @@ package org.thole.hendrik.mandelbrot.gwt.client.impl;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -33,8 +36,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MandelBrotImpl {
 
-	private final int size_x = 250;
-	private final int size_y = 250;
+	private  int size_x = 250;
+	private  int size_y = 250;
 	private final double xa  = -2.25;
 	private final double xe  = 0.75;
 	private final double ya  = -1.5;
@@ -47,12 +50,17 @@ public class MandelBrotImpl {
 
 	public Widget getMandel() {
 
+		final int size_screen = Math.min(Window.getClientWidth(), Window.getClientHeight())/2;
+		size_y = size_screen;
+		size_x = size_screen;
+
 		final Canvas canvas = Canvas.createIfSupported();
 		canvas.setCoordinateSpaceHeight(size_y);
 		canvas.setCoordinateSpaceWidth(size_y);
 		canvas.setHeight(size_y+"px");
 		canvas.setWidth(size_x+"px");
 		final Context2d context = canvas.getContext2d();
+
 
 		itmax13 = itmax*1/3;
 		itmax23 = itmax*2/3;
@@ -67,29 +75,57 @@ public class MandelBrotImpl {
 	 * Calculate the Set
 	 * @param canvas
 	 */
+	private double ix, iy, zr, zi, zrq, ziq;
+	private int it;
 	private final void paintMandel(final Context2d context) {
-		double ix, iy, zr, zi, zrq, ziq;
-		int it;
 		final double inx = (xe - xa) / size_x;
 		final double iny = (ye - ya) / size_y;
 
-		for (ix = xa; ix <= xe; ix += inx) {
-			for (iy = ya; iy <= ye; iy += iny) {
-				it = 0;
-				zr = 0;
-				zi = 0;
-				do {
-					zrq = zr * zr;
-					ziq = zi * zi;
-					it++;
-					zi = 2 * zr * zi + iy;
-					zr = zrq - ziq + ix;
-				} while (zrq + ziq < 4 && it < itmax);
+		ix = xa;
+		Scheduler.get().scheduleIncremental(new RepeatingCommand() {
 
-				context.setFillStyle(it2C(it));
-				context.fillRect((ix-xa)/inx, (iy-ya)/iny, 1, 1);
+			@Override
+			public boolean execute() {
+				if (ix <= xe) {
+					for (iy = ya; iy <= ye; iy += iny) {
+						it = 0;
+						zr = 0;
+						zi = 0;
+						do {
+							zrq = zr * zr;
+							ziq = zi * zi;
+							it++;
+							zi = 2 * zr * zi + iy;
+							zr = zrq - ziq + ix;
+						} while (zrq + ziq < 4 && it < itmax);
+
+						context.setFillStyle(it2C(it));
+						context.fillRect((ix-xa)/inx, (iy-ya)/iny, 1, 1);
+					}
+					ix += inx;
+					return true;
+				}
+				return false;
 			}
-		}
+		});
+
+		//		for (ix = xa; ix <= xe; ix += inx) {
+		//			for (iy = ya; iy <= ye; iy += iny) {
+		//				it = 0;
+		//				zr = 0;
+		//				zi = 0;
+		//				do {
+		//					zrq = zr * zr;
+		//					ziq = zi * zi;
+		//					it++;
+		//					zi = 2 * zr * zi + iy;
+		//					zr = zrq - ziq + ix;
+		//				} while (zrq + ziq < 4 && it < itmax);
+		//
+		//				context.setFillStyle(it2C(it));
+		//				context.fillRect((ix-xa)/inx, (iy-ya)/iny, 1, 1);
+		//			}
+		//		}
 	}
 
 
